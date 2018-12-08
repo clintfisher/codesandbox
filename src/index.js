@@ -7,16 +7,16 @@ import './styles.css';
 
 /**
  * @function repeat - repeat unit value
- * @param { string } repetitions
+ * @param { number } repetitions
  * @param { string } unit - unit to repeat (fr, px, rem etc)
  * @param { bool } ie - internet explorer 10 & 11
  * @returns { string } - unit repeated
  * @example
- *  // returns (3fr)[4];
- *  repeat(4, '3fr', true);
+ * repeat(4, '3fr', true);
+ * // returns (3fr)[4]
  * @example
- *  // returns 3fr 3fr 3fr 3fr
- *  repeat(4, '3fr');
+ * repeat(4, '3fr');
+ * // returns 3fr 3fr 3fr 3fr
  */
 const repeat = (repetitions, unit = '1fr', ie = false) => {
   let str;
@@ -25,9 +25,6 @@ const repeat = (repetitions, unit = '1fr', ie = false) => {
     : (str = unit + ' ');
   return ie ? str : str.repeat(repetitions);
 };
-
-console.log('str-ie: ', repeat(4, '3fr', true));
-console.log('str: ', repeat(4, '3fr'));
 
 /**
  * @function gridColumn -uses `span` by default pass false to specify grid line end
@@ -38,17 +35,13 @@ const gridColumn = (start, end, span = true) => {
     grid-column: ${start}/ ${span ? `span ${end}` : end};
   `;
 };
-
-console.log('gridColumn: ', gridColumn(1, 3));
-console.log(
-  'gridColumn no span: ',
-  gridColumn(1, 4, false)
-);
-
+// is the only reason for a repeat mixin to
+// handle ie prefixing?
 const gridSpec = {
   mobile: {
-    gridTemplateColumns: `1px ${repeat(6, '1fr')} 1px`,
-    gridColumnGap: '1.25rem'
+    gridTemplateColumns: `1px repeat(6, 1fr) 1px`,
+    gridColumnGap: '1.25rem',
+    gridTemplateRows: 'auto'
   },
   tablet: {
     gridTemplateColumns: `1px ${repeat(8, '1fr')} 1px`,
@@ -62,25 +55,60 @@ const gridSpec = {
 
 /**
  * @function grid
- * @param {object} - grid definitions
+ * @param {object} gridSpec - grid definitions
+ * @param {string} breakpoint - mobile, tablet, desktop
  */
-const grid = gridSpec => {
-  console.log('gridSpec: ', gridSpec);
+const grid = (gridSpec, breakpoint = 'mobile') => {
+  const { mobile, tablet, desktop } = gridSpec;
+  const getBreakpoint = breakpoint => {
+    switch (breakpoint) {
+      case 'mobile':
+        return `
+          grid-template-columns: ${
+            mobile.gridTemplateColumns
+          };
+          grid-column-gap: ${mobile.gridColumnGap};
+        `;
+      case 'tablet':
+        return `
+          grid-template-columns: ${
+            tablet.gridTemplateColumns
+          };
+          grid-column-gap: ${tablet.gridColumnGap};
+        `;
+      case 'desktop':
+        return `
+          grid-template-columns: ${
+            desktop.gridTemplateColumns
+          };
+          grid-column-gap: ${desktop.gridColumnGap};
+        `;
+      default:
+        return '';
+    }
+  };
+
   return `
     display: -ms-grid;
-    display: grid; 
+    display: grid;
+    ${getBreakpoint(breakpoint)};
   `;
 };
 
 export const Section = props => {
   const section = css`
     ${grid(gridSpec)};
-    -ms-grid-columns: ${repeat(3, '3fr', true)};
-    grid-template-columns: 2fr ${repeat(3, '3fr')};
     margin: 0 0 2rem;
-    // props as value(s)
     padding: ${props.fullWidth ? 0 : '2rem'};
     background-color: gold;
+
+    @media (min-width: 600px) {
+      ${grid(gridSpec, 'tablet')};
+    }
+
+    @media (min-width: 800px) {
+      ${grid(gridSpec, 'desktop')};
+    }
   `;
   const header = css`
     ${gridColumn(1, 5)};
