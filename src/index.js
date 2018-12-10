@@ -3,10 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Global, css, jsx } from '@emotion/core';
-import './styles.css';
 
 /**
- * @function repeat - repeat unit value
+ * @function repeat - repeat unit value anywhere in code, handle ie
  * @param { number } repetitions
  * @param { string } unit - unit to repeat (fr, px, rem etc)
  * @param { bool } ie - internet explorer 10 & 11
@@ -27,7 +26,7 @@ const repeat = (repetitions, unit = '1fr', ie = false) => {
 };
 
 /**
- * @function gridColumn -uses `span` by default pass false to specify grid line end
+ * @function gridColumn - uses `span` by default pass false to specify grid line end
  * @param {}
  */
 const gridColumn = (start, end, span = true) => {
@@ -35,21 +34,30 @@ const gridColumn = (start, end, span = true) => {
     grid-column: ${start}/ ${span ? `span ${end}` : end};
   `;
 };
-// is the only reason for a repeat mixin to
-// handle ie prefixing?
+
 const gridSpec = {
   mobile: {
-    gridTemplateColumns: `1px repeat(6, 1fr) 1px`,
-    gridColumnGap: '1.25rem',
-    gridTemplateRows: 'auto'
+    columns: 6,
+    columnGap: '1.25rem',
+    rows: 'auto',
+    rowGap: '1.25rem'
   },
+  // mobile: {
+  //   gridTemplateColumns: `1px repeat(6, 1fr) 1px`,
+  //   gridColumnGap: '1.25rem',
+  //   gridTemplateRows: 'auto'
+  // },
   tablet: {
-    gridTemplateColumns: `1px ${repeat(8, '1fr')} 1px`,
-    gridColumnGap: '1.875rem'
+    columns: 8,
+    columnGap: '1.875rem',
+    rows: 'auto',
+    rowGap: '1.875rem'
   },
   desktop: {
-    gridTemplateColumns: `1px ${repeat(12, '1fr')} 1px`,
-    gridColumnGap: '2.5rem'
+    columns: 12,
+    columnGap: '2.5rem',
+    rows: 'auto',
+    rowGap: '2.5rem'
   }
 };
 
@@ -64,24 +72,42 @@ const grid = (gridSpec, breakpoint = 'mobile') => {
     switch (breakpoint) {
       case 'mobile':
         return `
-          grid-template-columns: ${
-            mobile.gridTemplateColumns
-          };
-          grid-column-gap: ${mobile.gridColumnGap};
+          -ms-grid-columns: 10px ${repeat(
+            6,
+            '1fr',
+            true
+          )} 10px;
+          grid-template-columns: 1px ${repeat(
+            6,
+            '1fr'
+          )} 1px;
+          grid-column-gap: ${mobile.columnGap};
         `;
       case 'tablet':
         return `
-          grid-template-columns: ${
-            tablet.gridTemplateColumns
-          };
-          grid-column-gap: ${tablet.gridColumnGap};
+          -ms-grid-columns: 30px ${repeat(
+            8,
+            '1fr',
+            true
+          )} 30px;
+          grid-template-columns: 1px ${repeat(
+            8,
+            '1fr'
+          )} 1px;
+          grid-column-gap: ${tablet.columnGap};
         `;
       case 'desktop':
         return `
-          grid-template-columns: ${
-            desktop.gridTemplateColumns
-          };
-          grid-column-gap: ${desktop.gridColumnGap};
+          -ms-grid-columns: 30px ${repeat(
+            12,
+            '1fr',
+            true
+          )} 30px;
+          grid-template-columns: 1px ${repeat(
+            12,
+            '1fr'
+          )} 1px;
+          grid-column-gap: ${tablet.columnGap};
         `;
       default:
         return '';
@@ -114,6 +140,8 @@ export const Section = props => {
     ${gridColumn(1, 5)};
     ${gridColumn(1, -1, false)};
     background-color: darkkhaki;
+    text-align: center;
+    font-family: 'helvetica neue', helvetica, sans-serif;
   `;
   const heading = css`
     text-transform: uppercase;
