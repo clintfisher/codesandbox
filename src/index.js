@@ -14,19 +14,19 @@ const gridSpec = {
   mobile: {
     columns: 6,
     columnGap: '1.25rem',
-    rows: '4',
+    rows: 4,
     rowGap: '1.25rem'
   },
   tablet: {
     columns: 8,
     columnGap: '1.875rem',
-    rows: '3',
+    rows: 3,
     rowGap: '1.875rem'
   },
   desktop: {
     columns: 12,
     columnGap: '2.5rem',
-    rows: '3',
+    rows: 3,
     rowGap: '2.5rem'
   }
 };
