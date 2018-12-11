@@ -78,6 +78,7 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
           grid-template-columns: 1px ${repeat(tablet.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(tablet.rows, '1fr')};
           grid-column-gap: ${tablet.columnGap};
+          grid-row-gap: ${tablet.rowGap};
         `;
       case 'desktop':
         return `
@@ -91,6 +92,7 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
           grid-template-columns: 1px ${repeat(desktop.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(desktop.rows, '1fr')};
           grid-column-gap: ${desktop.columnGap};
+          grid-row-gap: ${desktop.rowGap};
         `;
       default:
         return '';
@@ -215,6 +217,9 @@ const Footer = props => {
     ${gridColumn(1, -1, false)};
     ${gridRow(4, 1)};
     background-color: gold;
+    @media (min-width: 600px) {
+      ${gridRow(3, 1)};
+    }
   `;
   return (
     <footer css={footer} {...props}>
