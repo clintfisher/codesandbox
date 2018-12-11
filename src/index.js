@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Global, css, jsx } from '@emotion/core';
 
 /**
- * @function repeat - repeat unit value anywhere in code, handle ie
+ * @function repeat - repeata a unit value anywhere in code, handle ie syntax
  * @param { number } repetitions
  * @param { string } unit - unit to repeat (fr, px, rem etc)
  * @param { bool } ie - internet explorer 10 & 11
@@ -19,19 +19,35 @@ import { Global, css, jsx } from '@emotion/core';
  */
 const repeat = (repetitions, unit = '1fr', ie = false) => {
   let str;
-  ie
-    ? (str = `(${unit})[${repetitions}]`)
-    : (str = unit + ' ');
+  ie ? (str = `(${unit})[${repetitions}]`) : (str = unit + ' ');
   return ie ? str : str.repeat(repetitions);
 };
 
 /**
- * @function gridColumn - uses `span` by default pass false to specify grid line end
- * @param {}
+ * @function gridColumn - places a grid item on a column
+ * @param {number} start - grid line column starts at
+ * @param {number} end - grid line column ends at
+ * @param {bool} span - false to use grid line end rather than span
  */
 const gridColumn = (start, end, span = true) => {
   return `
+    -ms-grid-column: ${start};
+    -ms-grid-column-span: ${end};
     grid-column: ${start}/ ${span ? `span ${end}` : end};
+  `;
+};
+
+/**
+ * @function gridRow- places a grid item on a row
+ * @param {number} start - grid line row starts at
+ * @param {number} end - grid line row ends at
+ * @param {bool} span - false to use grid line end rather than span
+ */
+const gridRow = (start, end, span = true) => {
+  return `
+    -ms-grid-row: ${start};
+    -ms-grid-row-span: ${end};
+    grid-row: ${start}/ ${span ? `span ${end}` : end};
   `;
 };
 
@@ -39,75 +55,55 @@ const gridSpec = {
   mobile: {
     columns: 6,
     columnGap: '1.25rem',
-    rows: 'auto',
+    rows: '3',
     rowGap: '1.25rem'
   },
-  // mobile: {
-  //   gridTemplateColumns: `1px repeat(6, 1fr) 1px`,
-  //   gridColumnGap: '1.25rem',
-  //   gridTemplateRows: 'auto'
-  // },
   tablet: {
     columns: 8,
     columnGap: '1.875rem',
-    rows: 'auto',
+    rows: '3',
     rowGap: '1.875rem'
   },
   desktop: {
     columns: 12,
     columnGap: '2.5rem',
-    rows: 'auto',
+    rows: '3',
     rowGap: '2.5rem'
   }
 };
 
 /**
- * @function grid
- * @param {object} gridSpec - grid definitions
+ * @function grid - outputs grid definitions according to the defined spec
  * @param {string} breakpoint - mobile, tablet, desktop
+ * @param {object} spec - grid definitions
  */
-const grid = (gridSpec, breakpoint = 'mobile') => {
-  const { mobile, tablet, desktop } = gridSpec;
+const grid = (breakpoint = 'mobile', spec = gridSpec) => {
+  const { mobile, tablet, desktop } = spec;
   const getBreakpoint = breakpoint => {
     switch (breakpoint) {
       case 'mobile':
         return `
-          -ms-grid-columns: 10px ${repeat(
-            6,
-            '1fr',
-            true
-          )} 10px;
-          grid-template-columns: 1px ${repeat(
-            6,
-            '1fr'
-          )} 1px;
+          -ms-grid-columns:
+           ${mobile.columnGap} ${repeat(6, `1fr ${mobile.columnGap}`, true)};
+          -ms-grid-rows: ${mobile.rows};
+          grid-template-columns: 1px ${repeat(6, '1fr')} 1px;
           grid-column-gap: ${mobile.columnGap};
         `;
       case 'tablet':
         return `
-          -ms-grid-columns: 30px ${repeat(
-            8,
-            '1fr',
-            true
-          )} 30px;
-          grid-template-columns: 1px ${repeat(
-            8,
-            '1fr'
-          )} 1px;
+          -ms-grid-columns:
+          ${tablet.columnGap} ${repeat(8, `1fr ${tablet.columnGap}`, true)};
+          -ms-grid-rows: ${tablet.rows};
+          grid-template-columns: 1px ${repeat(8, '1fr')} 1px;
           grid-column-gap: ${tablet.columnGap};
         `;
       case 'desktop':
         return `
-          -ms-grid-columns: 30px ${repeat(
-            12,
-            '1fr',
-            true
-          )} 30px;
-          grid-template-columns: 1px ${repeat(
-            12,
-            '1fr'
-          )} 1px;
-          grid-column-gap: ${tablet.columnGap};
+          -ms-grid-columns:
+          ${desktop.columnGap} ${repeat(12, `1fr ${desktop.columnGap}`, true)};
+          -ms-grid-rows: ${desktop.rows};
+          grid-template-columns: 1px ${repeat(12, '1fr')} 1px;
+          grid-column-gap: ${desktop.columnGap};
         `;
       default:
         return '';
@@ -121,81 +117,102 @@ const grid = (gridSpec, breakpoint = 'mobile') => {
   `;
 };
 
-export const Section = props => {
-  const section = css`
-    ${grid(gridSpec)};
+const Page = props => {
+  const page = css`
+    ${grid('mobile')};
+    min-height: 150px;
+    background-color: darkkhaki;
     margin: 0 0 2rem;
-    padding: ${props.fullWidth ? 0 : '2rem'};
-    background-color: gold;
 
     @media (min-width: 600px) {
-      ${grid(gridSpec, 'tablet')};
+      ${grid('tablet')};
     }
 
     @media (min-width: 800px) {
-      ${grid(gridSpec, 'desktop')};
+      ${grid('desktop')};
     }
   `;
-  const header = css`
-    ${gridColumn(1, 5)};
-    ${gridColumn(1, -1, false)};
-    background-color: darkkhaki;
-    text-align: center;
-    font-family: 'helvetica neue', helvetica, sans-serif;
-  `;
-  const heading = css`
-    text-transform: uppercase;
-    letter-spacing: 0.0625rem;
-    color: #fff;
-  `;
-  const body = css`
-    background-color: #ccc;
-    min-height: 2rem;
-    // props as key(s) and value(s)
-    ${props.fullWidth
-      ? `
-        margin-bottom: 2rem;
-        padding: 0;
+  return <div css={page} {...props} />;
+};
 
-        @media (min-width: 800px) {
-          margin-bottom: 4rem;
-        }
-        `
-      : 'padding: 2rem'}
+const Header = props => {
+  const header = css`
+    ${gridRow(1, 1)};
+    ${gridColumn(1, -1, false)};
+    text-align: center;
+    background-color: gold;
   `;
   return (
-    <section css={section}>
-      <header css={header}>
-        <h2 css={heading}>{props.name}</h2>
-      </header>
-      <div css={body} />
+    <header css={header} {...props}>
+      <h1>{props.heading}</h1>
+    </header>
+  );
+};
+
+const Footer = props => {
+  const footer = css`
+    ${gridColumn(1, -1, false)};
+    ${gridRow(3, 1)};
+    background-color: gold;
+  `;
+  return (
+    <footer css={footer} {...props}>
+      {props.copy}
+    </footer>
+  );
+};
+
+const Section = props => {
+  const { name } = props;
+  const section = css`
+    ${gridColumn(2, 6)};
+    ${gridRow(2, 1)};
+    margin: 0 0 1rem;
+    background-color: orange;
+
+    @media (min-width: 600px) {
+      ${gridColumn(2, 4)};
+
+      &:last-of-type {
+        ${gridColumn(6, 4)};
+      }
+    }
+
+    @media (min-width: 800px) {
+      ${gridColumn(2, 6)};
+
+      &:last-of-type {
+        ${gridColumn(8, 6)};
+      }
+    }
+  `;
+  return (
+    <section css={section} {...props}>
+      <h1>{name}</h1>
     </section>
   );
 };
 
-Section.propTypes = {
-  children: PropTypes.node,
-  divided: PropTypes.bool,
-  name: PropTypes.string
-};
-
-function App() {
+const App = () => {
   return (
     <>
       <Global
         styles={css`
           body {
             padding: 2rem;
+            font-family: 'helvetica neue', helvetica, sans-serif;
           }
         `}
       />
-      <div className="App">
-        <Section name={'Tacos'} />
-        <Section name={'Burritos'} fullWidth />
-      </div>
+      <Page>
+        <Header heading={'Los Angeles Times'} />
+        <Section name={'Email'} />
+        <Section name={'Password'} />
+        <Footer copy={'© 2018'} />
+      </Page>
     </>
   );
-}
+};
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);
