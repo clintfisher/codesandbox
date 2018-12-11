@@ -32,11 +32,11 @@ const gridSpec = {
 };
 
 /**
- * @function repeat - repeata a unit value anywhere in code, handle ie syntax
+ * @function repeat - repeats an expression, handles ie syntax
  * @param { number } repetitions
  * @param { string } expression - expression to repeat (fr, px, rem etc)
  * @param { bool } ie - internet explorer 10 & 11
- * @returns { string } - unit repeated
+ * @returns { string } - expression repeated
  * @example
  * repeat(4, '3fr', true);
  * // returns (3fr)[4]
@@ -51,45 +51,10 @@ const repeat = (repetitions, expression = '1fr', ie = false) => {
 };
 
 /**
- * @function gridColumn - places a grid item on a column
- * @param {number} start - grid line column starts at
- * @param {number} end - grid line column ends at
- * @param {bool} span - false to use grid line end rather than span
- * @example
- * ${gridColumn(2, 6)};
- * // grid-column-start: 2;
- * // grid-column-end: span 6;
- * @example
- * ${gridColumn(1, -1, false)};
- * // grid-column-start: 1;
- * // grid-column-end: -1;
- */
-const gridColumn = (start, end, span = true) => {
-  return `
-    -ms-grid-column: ${start};
-    -ms-grid-column-span: ${end};
-    grid-column: ${start}/ ${span ? `span ${end}` : end};
-  `;
-};
-
-/**
- * @function gridRow - places a grid item on a row
- * @param {number} start - grid line row starts at
- * @param {number} end - grid line row ends at
- * @param {bool} span - false to use grid line end rather than span
- */
-const gridRow = (start, end, span = true) => {
-  return `
-    -ms-grid-row: ${start};
-    -ms-grid-row-span: ${end};
-    grid-row: ${start}/ ${span ? `span ${end}` : end};
-  `;
-};
-
-/**
- * @function grid - outputs grid definitions according to the defined spec
+ * @function grid - grid display rules according to the defined spec
  * @param {string} breakpoint - mobile, tablet, desktop
  * @param {object} spec - grid definitions
+ * @returns { string } - grid display rules
  */
 const grid = (breakpoint = 'mobile', spec = gridSpec) => {
   const { mobile, tablet, desktop } = spec;
@@ -131,6 +96,44 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
     display: -ms-grid;
     display: grid;
     ${getBreakpoint(breakpoint)};
+  `;
+};
+
+/**
+ * @function gridColumn - places a grid item on a column
+ * @param {number} start - grid line column starts at
+ * @param {number} end - grid line column ends at
+ * @param {bool} span - false to use grid line end rather than span
+ * @returns { string } - grid-column values
+ * @example
+ * ${gridColumn(2, 6)};
+ * // grid-column-start: 2;
+ * // grid-column-end: span 6;
+ * @example
+ * ${gridColumn(1, -1, false)};
+ * // grid-column-start: 1;
+ * // grid-column-end: -1;
+ */
+const gridColumn = (start, end, span = true) => {
+  return `
+    -ms-grid-column: ${start};
+    -ms-grid-column-span: ${end};
+    grid-column: ${start}/ ${span ? `span ${end}` : end};
+  `;
+};
+
+/**
+ * @function gridRow - places a grid item on a row
+ * @param {number} start - grid line row starts at
+ * @param {number} end - grid line row ends at
+ * @param {bool} span - false to use grid line end rather than span
+ * @returns { string } - grid-row values
+ */
+const gridRow = (start, end, span = true) => {
+  return `
+    -ms-grid-row: ${start};
+    -ms-grid-row-span: ${end};
+    grid-row: ${start}/ ${span ? `span ${end}` : end};
   `;
 };
 
