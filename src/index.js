@@ -65,25 +65,29 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
           -ms-grid-columns:
            ${mobile.columnGap} ${repeat(mobile.columns, `1fr ${mobile.columnGap}`, true)};
           -ms-grid-rows: ${repeat(mobile.rows, `1fr ${mobile.rowGap}`, true)};
-          grid-template-columns: 1px ${repeat(6, '1fr')} 1px;
+          grid-template-columns: 1px ${repeat(mobile.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(mobile.rows, '1fr')};
           grid-column-gap: ${mobile.columnGap};
         `;
       case 'tablet':
         return `
           -ms-grid-columns:
-          ${tablet.columnGap} ${repeat(8, `1fr ${tablet.columnGap}`, true)};
+          ${tablet.columnGap} ${repeat(tablet.columns, `1fr ${tablet.columnGap}`, true)};
           -ms-grid-rows: ${repeat(tablet.rows, `1fr ${tablet.rowGap}`, true)};
-          grid-template-columns: 1px ${repeat(8, '1fr')} 1px;
+          grid-template-columns: 1px ${repeat(tablet.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(tablet.rows, '1fr')};
           grid-column-gap: ${tablet.columnGap};
         `;
       case 'desktop':
         return `
           -ms-grid-columns:
-          ${desktop.columnGap} ${repeat(12, `1fr ${desktop.columnGap}`, true)};
+          ${desktop.columnGap} ${repeat(
+          desktop.columns,
+          `1fr ${desktop.columnGap}`,
+          true
+        )};
           -ms-grid-rows: ${repeat(desktop.rows, `1fr ${desktop.rowGap}`, true)};
-          grid-template-columns: 1px ${repeat(12, '1fr')} 1px;
+          grid-template-columns: 1px ${repeat(desktop.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(desktop.rows, '1fr')};
           grid-column-gap: ${desktop.columnGap};
         `;
