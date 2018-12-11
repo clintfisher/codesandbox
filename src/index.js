@@ -51,9 +51,9 @@ const repeat = (repetitions, expression = '1fr', ie = false) => {
 };
 
 /**
- * @function grid - grid display rules according to the defined spec
- * @param {string} breakpoint - mobile, tablet, desktop
- * @param {object} spec - grid definitions
+ * @function grid - creates grid display rules per the defined spec
+ * @param { string } breakpoint - mobile, tablet, desktop
+ * @param { object } spec - grid definitions
  * @returns { string } - grid display rules
  */
 const grid = (breakpoint = 'mobile', spec = gridSpec) => {
@@ -68,6 +68,7 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
           grid-template-columns: 1px ${repeat(mobile.columns, '1fr')} 1px;
           grid-template-rows: ${repeat(mobile.rows, '1fr')};
           grid-column-gap: ${mobile.columnGap};
+          grid-row-gap: ${mobile.rowGap};
         `;
       case 'tablet':
         return `
@@ -105,9 +106,9 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
 
 /**
  * @function gridColumn - places a grid item on a column
- * @param {number} start - grid line column starts at
- * @param {number} end - grid line column ends at
- * @param {bool} span - false to use grid line end rather than span
+ * @param { number } start - grid line column starts at
+ * @param { number } end - grid line column ends at
+ * @param { bool } span - false to use grid line end rather than span
  * @returns { string } - grid-column values
  * @example
  * ${gridColumn(2, 6)};
@@ -128,9 +129,9 @@ const gridColumn = (start, end, span = true) => {
 
 /**
  * @function gridRow - places a grid item on a row
- * @param {number} start - grid line row starts at
- * @param {number} end - grid line row ends at
- * @param {bool} span - false to use grid line end rather than span
+ * @param { number } start - grid line row starts at
+ * @param { number } end - grid line row ends at
+ * @param { bool } span - false to use grid line end rather than span
  * @returns { string } - grid-row values
  */
 const gridRow = (start, end, span = true) => {
