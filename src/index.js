@@ -14,7 +14,7 @@ const gridSpec = {
   mobile: {
     columns: 6,
     columnGap: '1.25rem',
-    rows: '3',
+    rows: '4',
     rowGap: '1.25rem'
   },
   tablet: {
@@ -98,25 +98,28 @@ const grid = (breakpoint = 'mobile', spec = gridSpec) => {
       case 'mobile':
         return `
           -ms-grid-columns:
-           ${mobile.columnGap} ${repeat(6, `1fr ${mobile.columnGap}`, true)};
-          -ms-grid-rows: ${mobile.rows};
+           ${mobile.columnGap} ${repeat(mobile.columns, `1fr ${mobile.columnGap}`, true)};
+          -ms-grid-rows: ${repeat(mobile.rows, `1fr ${mobile.rowGap}`, true)};
           grid-template-columns: 1px ${repeat(6, '1fr')} 1px;
+          grid-template-rows: ${repeat(mobile.rows, '1fr')};
           grid-column-gap: ${mobile.columnGap};
         `;
       case 'tablet':
         return `
           -ms-grid-columns:
           ${tablet.columnGap} ${repeat(8, `1fr ${tablet.columnGap}`, true)};
-          -ms-grid-rows: ${tablet.rows};
+          -ms-grid-rows: ${repeat(tablet.rows, `1fr ${tablet.rowGap}`, true)};
           grid-template-columns: 1px ${repeat(8, '1fr')} 1px;
+          grid-template-rows: ${repeat(tablet.rows, '1fr')};
           grid-column-gap: ${tablet.columnGap};
         `;
       case 'desktop':
         return `
           -ms-grid-columns:
           ${desktop.columnGap} ${repeat(12, `1fr ${desktop.columnGap}`, true)};
-          -ms-grid-rows: ${desktop.rows};
+          -ms-grid-rows: ${repeat(desktop.rows, `1fr ${desktop.rowGap}`, true)};
           grid-template-columns: 1px ${repeat(12, '1fr')} 1px;
+          grid-template-rows: ${repeat(desktop.rows, '1fr')};
           grid-column-gap: ${desktop.columnGap};
         `;
       default:
@@ -163,19 +166,6 @@ const Header = props => {
   );
 };
 
-const Footer = props => {
-  const footer = css`
-    ${gridColumn(1, -1, false)};
-    ${gridRow(3, 1)};
-    background-color: gold;
-  `;
-  return (
-    <footer css={footer} {...props}>
-      {props.copy}
-    </footer>
-  );
-};
-
 const Section = props => {
   const { name } = props;
   const section = css`
@@ -184,11 +174,16 @@ const Section = props => {
     margin: 0 0 1rem;
     background-color: orange;
 
+    &:last-of-type {
+      ${gridRow(3, 1)};
+    }
+
     @media (min-width: 600px) {
       ${gridColumn(2, 4)};
 
       &:last-of-type {
         ${gridColumn(6, 4)};
+        ${gridRow(2, 1)};
       }
     }
 
@@ -204,6 +199,19 @@ const Section = props => {
     <section css={section} {...props}>
       <h1>{name}</h1>
     </section>
+  );
+};
+
+const Footer = props => {
+  const footer = css`
+    ${gridColumn(1, -1, false)};
+    ${gridRow(4, 1)};
+    background-color: gold;
+  `;
+  return (
+    <footer css={footer} {...props}>
+      {props.copy}
+    </footer>
   );
 };
 
